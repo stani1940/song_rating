@@ -11,8 +11,10 @@ class SongsController extends AbstractController
     #[Route('/songs', name: 'app_songs')]
     public function index(): Response
     {
+        $songs = ['Joni Be', 'Dilemma', 'Ostavame', 'Ti'];
         return $this->render('songs/index.html.twig', [
-            'controller_name' => 'SongsController',
+            'title' => 'Songs List',
+            'songs' => $songs,
         ]);
     }
 }
