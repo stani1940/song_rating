@@ -7,23 +7,41 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SongRepository::class)]
+/**
+ * @ORM\Entity(repositoryClass=SongRepository::class)
+ */
 class Song
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
     private $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private  $name;
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $band;
 
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'users')]
-    private $users;
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $song_name;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Rate::class, mappedBy="song", fetch="EAGER")
+     */
+    private $rate;
+
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     */
+    private $askedAt;
 
     public function __construct()
     {
-        $this->users = new ArrayCollection();
+        $this->rate = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -31,41 +49,68 @@ class Song
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getBand(): ?string
     {
-        return $this->name;
+        return $this->band;
     }
 
-    public function setName(string $name): self
+    public function setBand(string $band): self
     {
-        $this->name = $name;
+        $this->band = $band;
+
+        return $this;
+    }
+
+    public function getSongName(): ?string
+    {
+        return $this->song_name;
+    }
+
+    public function setSongName(string $song_name): self
+    {
+        $this->song_name = $song_name;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, User>
+     * @return Collection|Rate[]
      */
-    public function getUsers(): Collection
+    public function getRate(): Collection
     {
-        return $this->users;
+        return $this->rate;
     }
 
-    public function addUser(User $user): self
+    public function addRate(Rate $rate): self
     {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-            $user->addUser($this);
+        if (!$this->rate->contains($rate)) {
+            $this->rate[] = $rate;
+            $rate->setSong($this);
         }
 
         return $this;
     }
 
-    public function removeUser(User $user): self
+    public function removeRate(Rate $rate): self
     {
-        if ($this->users->removeElement($user)) {
-            $user->removeUser($this);
+        if ($this->rate->removeElement($rate)) {
+            // set the owning side to null (unless already changed)
+            if ($rate->getSong() === $this) {
+                $rate->setSong(null);
+            }
         }
+
+        return $this;
+    }
+
+    public function getAskedAt(): ?\DateTimeImmutable
+    {
+        return $this->askedAt;
+    }
+
+    public function setAskedAt(?\DateTimeImmutable $askedAt): self
+    {
+        $this->askedAt = $askedAt;
 
         return $this;
     }
