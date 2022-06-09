@@ -1,21 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello SongsController!{% endblock %}
+{% block title %}Hello SongController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
 
-<div class="example-wrapper">
-    <h1> {{ title }} ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        {% for song in songs  %}
-            <li> {{ song }}</li>
-        {% endfor %}
-    </ul>
-</div>
+    <div class="example-wrapper">
+        <h1>Song List! ✅</h1>
+        <ul>
+            {% for song in songs %}
+            <li>
+                Band: {{ song.band }} <br>
+                Song: {{ song.getSongName() }} <br>
+                <form action="{{ path('app_song_vote', { id:song.id }) }}" method="POST">
+                    <div class="vote-arrows vote-arrows-alt flex-fill pt-2" style="min-width: 90px;">
+                        <label>
+                            <input type="number" name="vote" maxlength="10" min="1" max="10">
+                        </label>
+                        <button class="btn btn-danger">RATE</button>
+                    </div>
+                </form>
+                Total votes: {{ song.sum }} points.
+                Last voted: {{ user }}
+                {% endfor %}
+            </li>
+        </ul>
+    </div>
 {% endblock %}
