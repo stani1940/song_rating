@@ -35,10 +35,11 @@ class SongController extends AbstractController
                 $sum += $r->getPoints();
             }
             $count= $qb->getQuery()->getSingleScalarResult();
-            $a->sum = $sum/$count;
-
-
-
+            if ($count>0){
+                $a->sum = $sum/$count;
+            }else{
+                $a->sum = $sum;
+            }
         }
 
 
