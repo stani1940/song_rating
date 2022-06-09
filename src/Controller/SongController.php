@@ -34,14 +34,13 @@ class SongController extends AbstractController
             foreach($a->getRate() as $r){
                 $sum += $r->getPoints();
             }
-            $count= $qb->getQuery()->getSingleScalarResult();
-            if ($count>0){
-                $a->sum = $sum/$count;
+            $count = $qb->getQuery()->getSingleScalarResult();
+            if ($count > 0) {
+                $a->sum = $sum / $count;
             }else{
                 $a->sum = $sum;
             }
         }
-
 
         return $this->render('songs/index.html.twig', [
             'songs' => $songs,

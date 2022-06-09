@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use phpDocumentor\Reflection\Types\Integer;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=SongRepository::class)
@@ -23,16 +24,19 @@ class Song
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     private $band;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     private $song_name;
 
     /**
      * @ORM\OneToMany(targetEntity=Rate::class, mappedBy="song", fetch="EAGER")
+     * @Assert\NotBlank
      */
     private $rate;
 
