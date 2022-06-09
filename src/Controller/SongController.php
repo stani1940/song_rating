@@ -19,6 +19,9 @@ class SongController extends AbstractController
     public function index(EntityManagerInterface $entityManager): Response
     {
         $user = get_current_user();
+
+        $user_email =  $this->getUser()->email;
+
         $songs = $entityManager->getRepository(Song::class)->findAll();
 
         $sum = 0;
@@ -44,7 +47,8 @@ class SongController extends AbstractController
 
         return $this->render('songs/index.html.twig', [
             'songs' => $songs,
-            'user' => $user
+            'user' => $user,
+            'user_email'=>$user_email,
         ]);
     }
     /**
