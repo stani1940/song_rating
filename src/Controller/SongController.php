@@ -24,11 +24,24 @@ class SongController extends AbstractController
         $sum = 0;
         foreach ($songs as $a) {
             $sum = 0;
+            $song_id = $a->getId();
+            $repository = $entityManager->getRepository(Rate::class);
+
+            $qb = $repository->createQueryBuilder('r')
+                ->select('count(r.id)')
+                ->where('r.song = :song_id')
+                ->setParameter('song_id', $song_id);
             foreach($a->getRate() as $r){
                 $sum += $r->getPoints();
             }
-            $a->sum = $sum;
+            $count= $qb->getQuery()->getSingleScalarResult();
+            $a->sum = $sum/$count;
+
+
+
         }
+
+
         return $this->render('songs/index.html.twig', [
             'songs' => $songs,
             'user' => $user
@@ -48,7 +61,7 @@ class SongController extends AbstractController
 
             $entityManager->persist($song);
             $entityManager->flush();
-            $this->addFlash('notice',''.$song->getSongName().' from band: '.$song->getBand().' Submitted Successfully!');
+            $this->addFlash('success',''.$song->getSongName().' from band: '.$song->getBand().' Submitted Successfully!');
 
             return $this->redirectToRoute('songs');
         }
@@ -66,16 +79,16 @@ class SongController extends AbstractController
         //  dd($user->getId());
         // $user = get_current_user();
         $vote = new Rate();
-        $total = 100;
+
         $vote->setPoints($request->request->get('vote'));
         $vote->setUserId($user->getId());
         $vote->setSong($song);
 
+
         $entityManager->persist($song);
         $entityManager->persist($vote);
         $entityManager->flush();
-
+        $this->addFlash('success','You gave: '.$vote->getPoints() .'points to song- '.$song->getSongName());
         return $this->redirect($this->generateUrl('songs'));
-        // return new Response('You gave: '.' '.$vote.' points to songs- '.$songs->getName());
     }
 }

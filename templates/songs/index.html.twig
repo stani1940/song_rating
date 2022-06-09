@@ -7,7 +7,11 @@
         .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
         .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
     </style>
-
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
     <div class="example-wrapper">
         <h1>Song List! ✅</h1>
         <ul>
@@ -23,7 +27,7 @@
                         <button class="btn btn-danger">RATE</button>
                     </div>
                 </form>
-                Total votes: {{ song.sum }} points.
+                Average Vote: {{ song.sum }} points.
                 Last voted: {{ user }}
                 {% endfor %}
             </li>
